@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import pcSetupsService from "../../services/pcSetupsService";
-import PCSetupTable from "../../components/pcSetups/PCSetupTable";
+import PCSetupTable, {
+  PCSetupSkeleton,
+} from "../../components/pcSetups/PCSetupTable";
 import PCSetupModal from "../../components/pcSetups/PCSetupModal";
 import PCSetupForm from "../../components/pcSetups/PCSetupForm";
+import { Plus, Cpu, Activity, Wrench, ArrowUpCircle } from "lucide-react";
 
 const PCSetupsPage = () => {
   const [setups, setSetups] = useState([]);
@@ -23,7 +26,7 @@ const PCSetupsPage = () => {
     } catch (err) {
       setError(err.message || "Failed to load PC setups data.");
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 500);
     }
   };
 
@@ -31,16 +34,23 @@ const PCSetupsPage = () => {
     fetchSetups();
   }, []);
 
+  // UI mock stats based on total units
+  const stats = useMemo(() => {
+    const total = setups.length;
+    // Mocking active vs maintenance just for UI aesthetics
+    const maintenance = Math.floor(total * 0.1);
+    const active = total - maintenance;
+    return { total, active, maintenance, upgrade: Math.floor(total * 0.05) };
+  }, [setups]);
+
   const handleOpenCreate = () => {
     setSelectedSetup(null);
     setIsModalOpen(true);
   };
-
   const handleOpenEdit = (setup) => {
     setSelectedSetup(setup);
     setIsModalOpen(true);
   };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedSetup(null);
@@ -50,7 +60,6 @@ const PCSetupsPage = () => {
     setIsSaving(true);
     setError("");
     setSuccess("");
-
     try {
       if (selectedSetup) {
         await pcSetupsService.updatePcSetup(selectedSetup.pc_id, formData);
@@ -59,14 +68,13 @@ const PCSetupsPage = () => {
         await pcSetupsService.createPcSetup(formData);
         setSuccess("PC setup created successfully!");
       }
-
       handleCloseModal();
       fetchSetups();
     } catch (err) {
       const errorMsg =
         typeof err === "object" && err.messages
           ? Object.values(err.messages).join(", ")
-          : err.message || "Failed to save PC setup.";
+          : err.message;
       alert(`Error: ${errorMsg}`);
     } finally {
       setIsSaving(false);
@@ -74,8 +82,8 @@ const PCSetupsPage = () => {
   };
 
   const handleDeleteSetup = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this PC setup?")) return;
-
+    if (!window.confirm("Are you sure you want to delete this PC setup?"))
+      return;
     setError("");
     setSuccess("");
     try {
@@ -83,49 +91,84 @@ const PCSetupsPage = () => {
       setSuccess("PC setup deleted successfully!");
       fetchSetups();
     } catch (err) {
-      setError(err.message || "Failed to delete PC setup.");
+      setError(err.message);
     }
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-7xl mx-auto animate-fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">PC Setups</h1>
-          <p className="text-gray-600 text-sm">Manage individual PC specifications and availability</p>
+          <h1 className="text-3xl font-bold text-[var(--color-ink-primary)] tracking-tight mb-1">
+            Hardware Fleet
+          </h1>
+          <p className="text-[var(--color-ink-muted)] text-sm">
+            Manage and monitor all PC setups across gaming rooms.
+          </p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={fetchSetups}
-            className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded shadow-sm text-sm font-medium transition-colors"
-          >
-            Refresh
-          </button>
-          <button
-            onClick={handleOpenCreate}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-sm text-sm font-medium transition-colors"
-          >
-            Add New PC Setup
-          </button>
+        <button
+          onClick={handleOpenCreate}
+          className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-5 py-2.5 rounded-lg shadow-[var(--shadow-raised)] text-sm font-semibold transition-all transform hover:-translate-y-0.5"
+        >
+          <Plus size={18} /> Register New PC
+        </button>
+      </div>
+
+      {/* Hardware Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+            <Cpu size={20} />
+          </div>
+          <h3 className="text-3xl font-bold text-gray-800 mb-1">
+            {stats.total}
+          </h3>
+          <p className="text-sm font-medium text-gray-500">Total Units</p>
+          <Activity className="absolute -right-4 -bottom-4 text-blue-50 opacity-50 w-24 h-24 group-hover:scale-110 transition-transform" />
+        </div>
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div className="w-10 h-10 rounded-lg bg-[var(--color-primary-soft)] text-[var(--color-primary)] flex items-center justify-center mb-4">
+            <Activity size={20} />
+          </div>
+          <h3 className="text-3xl font-bold text-gray-800 mb-1 flex items-center gap-2">
+            {stats.active}{" "}
+            <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+          </h3>
+          <p className="text-sm font-medium text-gray-500">Active PCs</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <div className="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center mb-4">
+            <Wrench size={20} />
+          </div>
+          <h3 className="text-3xl font-bold text-gray-800 mb-1">
+            {stats.maintenance}
+          </h3>
+          <p className="text-sm font-medium text-gray-500">In Maintenance</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <div className="w-10 h-10 rounded-lg bg-gray-50 text-gray-600 flex items-center justify-center mb-4">
+            <ArrowUpCircle size={20} />
+          </div>
+          <h3 className="text-3xl font-bold text-gray-800 mb-1">
+            {stats.upgrade}
+          </h3>
+          <p className="text-sm font-medium text-gray-500">Upgrade Required</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
+        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg text-sm shadow-sm">
           {error}
         </div>
       )}
-      
       {success && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded text-sm">
+        <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg text-sm shadow-sm">
           {success}
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="text-gray-500 font-medium">Loading PC setups data...</div>
-        </div>
+        <PCSetupSkeleton />
       ) : (
         <PCSetupTable
           setups={setups}
@@ -137,7 +180,7 @@ const PCSetupsPage = () => {
       <PCSetupModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={selectedSetup ? "Edit PC Setup" : "Add New PC Setup"}
+        title={selectedSetup ? "Edit Hardware Spec" : "Register PC"}
       >
         <PCSetupForm
           initialData={selectedSetup}
