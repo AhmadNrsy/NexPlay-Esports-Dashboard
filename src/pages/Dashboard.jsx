@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import statisticsService from "../services/statisticsService";
+import { Eye, Monitor, DollarSign, BarChart3 } from "lucide-react";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -49,34 +50,52 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-[var(--color-ink-primary)]">Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
         {/* Active Bookings Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-          <div className="text-sm text-gray-500 uppercase font-semibold">Active Bookings</div>
-          <div className="mt-2 text-3xl font-bold text-gray-800">{stats.activeBookings}</div>
+        <div className="bg-[var(--color-surface-card)] rounded-2xl p-6 border border-gray-100 shadow-[var(--shadow-subtle)] flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-[var(--color-ink-muted)] text-sm font-medium">
+            <Eye size={18} />
+            <span>Active Bookings</span>
+          </div>
+          <div className="text-3xl font-bold text-[var(--color-ink-primary)]">
+            {stats.activeBookings}
+          </div>
         </div>
 
         {/* Available Rooms Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
-          <div className="text-sm text-gray-500 uppercase font-semibold">Available Rooms</div>
-          <div className="mt-2 text-3xl font-bold text-gray-800">{stats.availableRooms}</div>
+        <div className="bg-[var(--color-surface-card)] rounded-2xl p-6 border border-gray-100 shadow-[var(--shadow-subtle)] flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-[var(--color-ink-muted)] text-sm font-medium">
+            <Monitor size={18} />
+            <span>Available Rooms</span>
+          </div>
+          <div className="text-3xl font-bold text-[var(--color-ink-primary)]">
+            {stats.availableRooms}
+          </div>
         </div>
 
         {/* Revenue Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-          <div className="text-sm text-gray-500 uppercase font-semibold">Revenue</div>
-          <div className="mt-2 text-3xl font-bold text-gray-800">
+        <div className="bg-[var(--color-surface-card)] rounded-2xl p-6 border border-gray-100 shadow-[var(--shadow-subtle)] flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-[var(--color-ink-muted)] text-sm font-medium">
+            <DollarSign size={18} />
+            <span>Revenue</span>
+          </div>
+          <div className="text-3xl font-bold text-[var(--color-ink-primary)]">
             Rp {Number(stats.revenue).toLocaleString('id-ID')}
           </div>
         </div>
 
         {/* Total Bookings Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
-          <div className="text-sm text-gray-500 uppercase font-semibold">Total Bookings</div>
-          <div className="mt-2 text-3xl font-bold text-gray-800">{stats.totalBookings}</div>
+        <div className="bg-[var(--color-surface-card)] rounded-2xl p-6 border border-gray-100 shadow-[var(--shadow-subtle)] flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-[var(--color-ink-muted)] text-sm font-medium">
+            <BarChart3 size={18} />
+            <span>Total Bookings</span>
+          </div>
+          <div className="text-3xl font-bold text-[var(--color-ink-primary)]">
+            {stats.totalBookings}
+          </div>
         </div>
 
       </div>

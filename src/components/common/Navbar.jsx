@@ -1,5 +1,6 @@
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const Navbar = () => {
   const { logout } = useAuth();
@@ -11,14 +12,15 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-white shadow-md flex items-center justify-between px-6 py-4">
-      <div className="text-gray-800 font-semibold text-lg">Admin Portal</div>
+    <header className="bg-[var(--color-surface-card)] border-b border-[var(--color-surface-hover)] flex items-center justify-between px-6 py-4">
+      <div className="text-[var(--color-ink-primary)] font-semibold text-lg">Admin Portal</div>
       <div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm transition-colors"
+          className="flex items-center gap-2 text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] py-2 px-4 rounded-lg text-sm font-medium transition-colors"
         >
-          Logout
+          <LogOut size={18} />
+          <span>Logout</span>
         </button>
       </div>
     </header>
