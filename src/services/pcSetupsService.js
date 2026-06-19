@@ -3,7 +3,8 @@ import api from "./api";
 const pcSetupsService = {
   getAllPcSetups: async () => {
     try {
-      const response = await api.get("/pc-setups");
+      // FIX: Ubah pc-setups jadi pc_setups
+      const response = await api.get("/pc_setups");
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -11,7 +12,8 @@ const pcSetupsService = {
   },
   getPcSetupById: async (id) => {
     try {
-      const response = await api.get(`/pc-setups/${id}`);
+      // FIX: Ubah pc-setups jadi pc_setups
+      const response = await api.get(`/pc_setups/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -19,7 +21,8 @@ const pcSetupsService = {
   },
   createPcSetup: async (data) => {
     try {
-      const response = await api.post("/pc-setups", data);
+      // FIX: Ubah pc-setups jadi pc_setups
+      const response = await api.post("/pc_setups", data);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -27,7 +30,8 @@ const pcSetupsService = {
   },
   updatePcSetup: async (id, data) => {
     try {
-      const response = await api.put(`/pc-setups/${id}`, data);
+      // FIX: Ubah pc-setups jadi pc_setups
+      const response = await api.put(`/pc_setups/${id}`, data);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -35,7 +39,8 @@ const pcSetupsService = {
   },
   deletePcSetup: async (id) => {
     try {
-      const response = await api.delete(`/pc-setups/${id}`);
+      // FIX: Ubah pc-setups jadi pc_setups
+      const response = await api.delete(`/pc_setups/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
