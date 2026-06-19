@@ -13,6 +13,7 @@ import {
   Undo2,
   Filter,
   MoreVertical,
+  Plus, // <-- Tambahin import Plus dari lucide-react
 } from "lucide-react";
 
 const PaymentsPage = () => {
@@ -42,7 +43,7 @@ const PaymentsPage = () => {
     fetchPayments();
   }, []);
 
-  // UI Stats calculation (100% connected to DB)
+  // UI Stats calculation
   const stats = useMemo(() => {
     const totalRev = payments
       .filter((p) => p.status_bayar === "Paid")
@@ -51,21 +52,28 @@ const PaymentsPage = () => {
           acc + Number(p.amount || p.total_bayar || p.total_harga || 0),
         0,
       );
-
     const pending = payments.filter(
       (p) => p.status_bayar !== "Paid" && p.status_bayar !== "Failed",
     ).length;
-
     const completed = payments.filter((p) => p.status_bayar === "Paid").length;
-    const failed = payments.filter((p) => p.status_bayar === "Failed").length;
 
-    return { revenue: totalRev, pending, completed, refunds: failed };
+    // Asumsi lu punya parameter ini, kalau belum, ini cuma hitungan statis dari UI lu sblmnya
+    const refunds = payments.filter((p) => p.status_bayar === "Failed").length;
+
+    return { revenue: totalRev, pending, completed, refunds };
   }, [payments]);
+
+  // FUNGSI BARU: Buat buka modal kosong (Add New)
+  const handleOpenCreate = () => {
+    setSelectedPayment(null);
+    setIsModalOpen(true);
+  };
 
   const handleOpenEdit = (payment) => {
     setSelectedPayment(payment);
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedPayment(null);
@@ -74,8 +82,16 @@ const PaymentsPage = () => {
   const handleSavePayment = async (formData) => {
     setIsSaving(true);
     try {
-      await paymentsService.updatePayment(selectedPayment.payment_id, formData);
-      setSuccess("Payment updated successfully!");
+      if (selectedPayment) {
+        await paymentsService.updatePayment(
+          selectedPayment.payment_id,
+          formData,
+        );
+        setSuccess("Payment updated successfully!");
+      } else {
+        await paymentsService.createPayment(formData);
+        setSuccess("Payment created successfully!");
+      }
       handleCloseModal();
       fetchPayments();
     } catch (err) {
@@ -96,9 +112,19 @@ const PaymentsPage = () => {
             Overview and management of financial transactions.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-lg shadow-sm text-sm font-semibold transition-all">
-          <Download size={18} /> Download Report
-        </button>
+
+        {/* BUTTON BARU DI SINI */}
+        <div className="flex gap-3">
+          <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-lg shadow-sm text-sm font-semibold transition-all">
+            <Download size={18} /> Download Report
+          </button>
+          <button
+            onClick={handleOpenCreate}
+            className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-5 py-2.5 rounded-lg shadow-sm text-sm font-semibold transition-all"
+          >
+            <Plus size={18} /> New Payment
+          </button>
+        </div>
       </div>
 
       {/* Financial Widgets */}
@@ -188,11 +214,10 @@ const PaymentsPage = () => {
         )}
       </div>
 
-      {/* Modal is kept only for edit logic */}
       <PaymentModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title="Edit Payment"
+        title={selectedPayment ? "Edit Payment" : "New Payment"}
       >
         <PaymentForm
           initialData={selectedPayment}
