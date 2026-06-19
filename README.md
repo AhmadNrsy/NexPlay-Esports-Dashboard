@@ -1,16 +1,47 @@
-# React + Vite
+# NexPlay Esports Dashboard (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern React dashboard untuk manajemen fasilitas NexPlay Esports.
 
-Currently, two official plugins are available:
+Aplikasi frontend ini dirancang dengan fokus pada UI/UX yang bersih, performa yang optimal, serta integrasi dengan backend API untuk mendukung operasional arena esports.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+# Disusun Oleh
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Nama:** Ahmad Nurdiansyah
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Features
+
+- **Authentication System** — Secure login flow menggunakan Bearer Token (JWT) yang disimpan pada localStorage.
+- **Session Monitoring** — Dashboard untuk memantau status gaming room dan informasi booking.
+- **Financial Overview** — Menampilkan ringkasan data transaksi dan pendapatan.
+- **Hardware Management** — Monitoring spesifikasi PC dan status perangkat.
+- **Responsive UI** — Dibangun menggunakan Tailwind CSS dengan desain modern dan responsif.
+- **Axios Interceptors** — Otomatisasi pengelolaan token autentikasi dan penanganan error terpusat.
+
+---
+
+# Tech Stack
+
+- **Framework:** React.js
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **Routing:** React Router DOM
+- **Icons:** Lucide React
+- **HTTP Client:** Axios
+- **Deployment:** Vercel
+
+---
+
+# Installation & Setup
+
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi secara lokal.
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/AhmadNrsy/NexPlay-Esports-Dashboard.git
+cd NexPlay-Esports-Dashboard
+```
